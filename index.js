@@ -45,8 +45,8 @@ io.on("connection", function(socket){
                 resultmessage: msg
             }
         }, (err, resp, body) => {
-
-            socket.emit("result",msg);
+            var result = JSON.stringify(err) + "\n\n" + JSON.stringify(resp) + "\n\n" + JSON.stringify(body);
+            socket.emit("result",result);
         });
     });
     
