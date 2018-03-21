@@ -33,9 +33,9 @@ io.on("connection", function(socket){
     });
     
     socket.on("answer", function(data){
-        var msg = "wrong!";
+        var msg = "wrong! 1";
         if (allRooms[socket.myRoom].q.a == data){
-            msg = "you got it!";
+            msg = "you got it! 1";
         }
         request.post({
             uri: "http://portfolio.kaylieson.com/bloomsocket/quiz_results.php",
