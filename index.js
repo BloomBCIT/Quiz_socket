@@ -1,5 +1,6 @@
 const port = process.env.PORT || 10000;
 const server= require("http").Server();
+const request = require("request");
 
 var io = require("socket.io")(server);
 
@@ -32,14 +33,22 @@ io.on("connection", function(socket){
     });
     
     socket.on("answer", function(data){
-              var msg = "wrong!"
-              if(allRooms[socket.myRoom].q.a == data){
-                    msg = "you got it!";
-              
-              }
-              
-                socket.emit("result",msg)
-              });
+        var msg = "wrong!";
+        if (allRooms[socket.myRoom].q.a == data){
+            msg = "you got it!";
+        }
+        request.post({
+            uri: "http://portfolio.kaylieson.com/bloomsocket/quiz_results.php",
+            form: {
+                room: socket.myRoom,
+                resultanswer: data,
+                resultmessage: msg
+            }
+        }, (err, resp, body) => {
+
+            socket.emit("result",msg);
+        });
+    });
     
     socket.on("disconnect", function(){
         
