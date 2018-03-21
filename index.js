@@ -27,15 +27,26 @@ io.on("connection", function(socket){
         //tell everybody there's a new question
         console.log(data);
         allRooms[socket.myRoom].q =data;
-        socket.to(socket.myRoom).emit("newq", data);   
-        
-        
+
+        request.post({
+            uri: "http://portfolio.kaylieson.com/bloomsocket/quizes.php",
+            form: {
+                question: data.q,
+                option1: data.o1,
+                option2: data.o2,
+                answer: data.a,
+                room: socket.myRoom
+            }
+        }, (err, resp, body) => {
+
+            socket.to(socket.myRoom).emit("newq", data);   
+        });
     });
     
     socket.on("answer", function(data){
-        var msg = "wrong! 1";
+        var msg = "wrong!";
         if (allRooms[socket.myRoom].q.a == data){
-            msg = "you got it! 1";
+            msg = "you got it!";
         }
         request.post({
             uri: "http://portfolio.kaylieson.com/bloomsocket/quiz_results.php",
@@ -45,8 +56,8 @@ io.on("connection", function(socket){
                 resultmessage: msg
             }
         }, (err, resp, body) => {
-            var result = JSON.stringify(err) + "\n\n" + JSON.stringify(resp) + "\n\n" + JSON.stringify(body);
-            socket.emit("result",result);
+
+            socket.emit("result",msg);
         });
     });
     
